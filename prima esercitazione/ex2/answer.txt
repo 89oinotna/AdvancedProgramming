@@ -1,0 +1,1 @@
+Bytecode is the same because byte are treated as int in java so they doesnt have opcodes

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="prova">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../prova/out/artifacts/prova_jar/prova.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

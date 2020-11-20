@@ -1,0 +1,20 @@
+notAllowed n v=replicate n v
+
+myRep n v=take n (map (\_ -> v) [1..])
+myRepl n v=take n [v,v..]
+
+
+lucky 7 = "LUCKY NUMBER SEVEN!"  
+lucky x = "Sorry, you're out of luck, pal!" 
+
+(|>) a f= f a
+
+myReplace n v=repeat v |> take n
+
+myReplicate4 n v=myReplicate' n []
+                where
+                  myReplicate' 0 xs=xs
+                  myReplicate' n xs=myReplicate' (n-1) (v:xs)
+                  
+myReplicate 0 _ = []
+myReplicate n v = v : (myReplicate (n-1) v)

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="prova:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/prova_jar</output-path>
+    <root id="archive" name="prova.jar">
+      <element id="module-output" name="prova" />
+    </root>
+  </artifact>
+</component>
