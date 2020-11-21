@@ -5,7 +5,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@interface XMLField{
+@interface XMLfield {
     String type();
     String name() default "";
 }
