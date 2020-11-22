@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class main {
@@ -10,6 +11,11 @@ public class main {
         try {
             XMLSerializer.serialize(ss, "ciao");
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            XMLSerializer.deserialize("ciao");
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }

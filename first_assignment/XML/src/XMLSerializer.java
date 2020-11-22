@@ -1,7 +1,6 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,8 +43,39 @@ public class XMLSerializer {
         System.out.println(sb.toString());
         BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
         out.write(sb.toString());
-        out.close();
+        try {
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
+    }
+
+    /**
+     *
+     * @param filePath
+     */
+    public static void deserialize(String filePath) throws FileNotFoundException {
+        BufferedReader in = new BufferedReader(new FileReader(filePath));
+        StringBuilder xml=new StringBuilder();
+        try {
+            String line;
+            while ((line=in.readLine())!=null) {
+                xml.append(line);
+            }
+        }catch (IOException e){
+
+        }finally{
+            try {
+                in.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        Arrays.stream(xml.toString().split("(?<=(<\\w*>))"))
+                .forEach(item-> {
+                    System.out.println(item);;
+                });
     }
 
     /**
