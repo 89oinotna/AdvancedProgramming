@@ -14,9 +14,7 @@ public class main {
             if(dst.createNewFile()) {
                 WordCount wc = new WordCount(Paths.get("")
                         .toAbsolutePath(), dst);
-                var res=wc.map(wc.read());
-                var res1=wc.reduce(wc.combine(res));
-                wc.write(res1);
+                var res=wc.start();
             }
         } catch (IOException e) {
             e.printStackTrace();

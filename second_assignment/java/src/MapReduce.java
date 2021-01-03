@@ -1,10 +1,10 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 abstract class MapReduce<K, V, IK extends Comparable<IK>, IV, R> {
     /*
@@ -14,13 +14,55 @@ abstract class MapReduce<K, V, IK extends Comparable<IK>, IV, R> {
     */
 
     /**
+     * Template method to perform MapReduce from read -> write
+     * @return the reduced stream
+     */
+    public final Stream<Pair<IK, R>> start(){
+
+        var read=read();
+        var mapped=map(read);
+        var combined=combine(mapped);
+        var reduced=reduce(combined);
+        write(reduced);
+        return reduced;
+    }
+
+    //combine is a concrete operation used by the template method
+
+
+
+    /**
      * Combines all map results
      * grouping values by the provided comparator function
      * @param l
      * @return
      */
-    public final Stream<Pair<IK, List<IV>>> combine(Stream<Pair<IK, IV>> l){
-        Stream<Pair<IK, List<IV>>> res= Stream.<Pair<IK, List<IV>>>builder().build();
+    private Stream<Pair<IK, List<IV>>> combine(Stream<Pair<IK, IV>> l){
+        Supplier<TreeMap<IK, List<IV>>> makeTreeMap = () -> new TreeMap<>(this::compare);
+        return l.collect(
+                makeTreeMap,
+                (map, it) -> {
+                    // If map dont contains key create the list
+                    if (!map.containsKey(it.getKey()))
+                        map.put(it.getKey(), new ArrayList<>());
+
+                    // Put value in the corresponding list
+                    map.get(it.getKey()).add(it.getValue());
+                },
+                (m1, m2) -> m2.forEach((k, v) -> {
+                    // If m1 dont contains k create the list
+                    if (!m1.containsKey(k))
+                        m1.put(k, new ArrayList<>());
+
+                    // Merge the two lists
+                    m1.get(k).addAll(v);
+                })
+        )
+                .entrySet()
+                .parallelStream()
+                .map(entry -> new Pair<>(entry.getKey(), entry.getValue()));
+
+        /*Stream<Pair<IK, List<IV>>> res= Stream.<Pair<IK, List<IV>>>builder().build();
 
         Iterator<Pair<IK, IV>> it=l.sorted((p1, p2) -> compare(p1.getKey(), p2.getKey()))
                 .sequential().iterator();
@@ -38,8 +80,7 @@ abstract class MapReduce<K, V, IK extends Comparable<IK>, IV, R> {
             last=curr;
         }while(it.hasNext());
         res=Stream.concat(res, Stream.of(new Pair<>(acc.getKey(), acc.getValue())));
-        //List<Pair<IK, List<IV>>> a=res.collect(toList());
-        return res;
+        return res;*/
     }
 
     protected abstract Stream<Pair<K, V>> read();
