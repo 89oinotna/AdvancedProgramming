@@ -83,14 +83,6 @@ def test(fun, *args, **kwargs):
     multi(fun, 2, 8, *args, **kwargs)()
     multi(fun, 4, 4, *args, **kwargs)()
     multi(fun, 8, 2, *args, **kwargs)()
-    """single = benchmark(fun, iter=16, verbose=True, csv_file="f_1_16.csv")
-    single(*args, **kwargs)
-    eight_2 = multi(benchmark(fun, iter=8, verbose=True, csv_file="f_2_8.csv"), 2, *args, **kwargs)
-    four_4 = multi(benchmark(fun, iter=4, verbose=True, csv_file="f_4_4.csv"), 4, *args, **kwargs)
-    two_8 = multi(benchmark(fun, iter=2, verbose=True, csv_file="f_8_2.csv"), 8, *args, **kwargs)
-    eight_2()
-    four_4()
-    two_8()"""
 
 
 def fib(n):
@@ -102,3 +94,20 @@ def fib(n):
 
 
 test(fib, 2)
+
+
+"""
+    Discuss briefly the results in a comment in the Python file. 
+    
+    File name,  run num,    is warmup,  timing
+    f_1-16      0,          no,         0.0003570629999671837
+    f_2-8,      0,          no,         0.0003923219999819594
+    f_4-4,      0,          no,         0.0005411099999719227
+    f_8-2,      0,          no,         0.00031719499997961975
+    
+    As we can see that increasing the number of thread the running 
+    time doesn't differs too much on each run.
+    
+    This is due to the GIL that assures that only one thread executes 
+    Python bytecode at a time
+"""
