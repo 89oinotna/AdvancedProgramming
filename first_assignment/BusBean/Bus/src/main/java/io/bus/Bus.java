@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class Bus {
     private int capacity=50;
     private boolean doorOpen=false;
-    private int numPassenger=20;
+    private AtomicInteger numPassenger=new AtomicInteger(20);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final PropertyChangeSupport mPcs =
         new PropertyChangeSupport(this);
@@ -38,7 +39,7 @@ public class Bus {
     
     public Bus(int capacity, int numPassenger){
         this.capacity=capacity;
-        this.numPassenger=numPassenger;
+        this.numPassenger.set(numPassenger);
     }
     
    
@@ -62,20 +63,28 @@ public class Bus {
     }
     
     public int getNumPassenger() {
-        return numPassenger;
+        return numPassenger.get();
     }
 
-    public synchronized void setNumPassenger(int numPassenger) {
-        if(numPassenger>capacity){
-            throw new TooMuchPassengers();
+    public synchronized void increasePassengers(int increase){
+        synchronized(numPassenger){
+            System.out.println("Passengers entering: "+increase); 
+            setNumPassenger(numPassenger.get()+increase);
         }
-        int oldNumPassenger = this.numPassenger;
+    
+    }
+    
+    public synchronized void setNumPassenger(int numPassenger) {
+        int oldNumPassenger = this.numPassenger.get();
         try{
             mVcs.fireVetoableChange("numPassenger",
                                     oldNumPassenger, numPassenger);
         }catch(PropertyVetoException e){
-            e.printStackTrace();
-            throw new TooMuchPassengers(e.getMessage());
+            System.out.println(e.getMessage());
+            throw new TooManyPassengers(e.getMessage());
+        }
+        if(numPassenger>capacity){
+            throw new TooManyPassengers("Passengers number exceed the full capacity");
         }
         //people can leave or enter the bus so i need that the ports are open
         //i need to cancel previous task es leaving if now people are also entering
@@ -97,7 +106,7 @@ public class Bus {
         setDoorOpen(true);
         
         
-        this.numPassenger = numPassenger;
+        this.numPassenger.set(numPassenger);
         mPcs.firePropertyChange("numPassenger",
                                  oldNumPassenger, numPassenger);
     }
@@ -122,7 +131,11 @@ public class Bus {
     public void activate(){
         scheduler.scheduleWithFixedDelay(
             () -> {
-                setNumPassenger(numPassenger-(int)(Math.random()*numPassenger));
+                synchronized(numPassenger){
+                    int leaving=(int)(Math.random()*numPassenger.get());
+                    System.out.println("Passengers leaving: " + leaving);
+                    setNumPassenger(numPassenger.get()-leaving);
+                }
             },
             10, 10, TimeUnit.SECONDS);
     }

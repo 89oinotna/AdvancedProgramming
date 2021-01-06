@@ -6,6 +6,7 @@
 package io.busboard;
 
 import io.bus.Bus;
+import io.bus.TooManyPassengers;
 import io.covidcontroller.CovidController;
 import javax.swing.JOptionPane;
 
@@ -122,10 +123,12 @@ public class BusBoard extends javax.swing.JFrame {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try{
-            bus2.setNumPassenger(Integer.parseInt(tfEnter.getText()));
+            bus2.increasePassengers(Integer.parseInt(tfEnter.getText()));
             btnEnter.setEnabled(false);
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Incorrect number", "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(TooManyPassengers e){
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnEnterActionPerformed
 

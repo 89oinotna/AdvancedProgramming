@@ -23,7 +23,7 @@ public class CovidController implements VetoableChangeListener{
     @Override
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
         if("numPassenger".equals(evt.getPropertyName()) && (int)evt.getNewValue() > reducedCapacity){
-           throw new PropertyVetoException("Passengers number exceed the capacity", evt); 
+           throw new PropertyVetoException("Passengers number exceed the reduced capacity", evt); 
         }
     }
     

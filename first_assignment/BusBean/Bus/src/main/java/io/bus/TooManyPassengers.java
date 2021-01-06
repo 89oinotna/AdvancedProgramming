@@ -9,13 +9,13 @@ package io.bus;
  *
  * @author azzeg
  */
-public class TooMuchPassengers extends RuntimeException{
+public class TooManyPassengers extends RuntimeException{
     
-    public TooMuchPassengers(){
+    public TooManyPassengers(){
         super();
     }
     
-    public TooMuchPassengers(String msg){
+    public TooManyPassengers(String msg){
         super(msg);
     }
     
