@@ -68,6 +68,8 @@ public class BusBoard extends javax.swing.JFrame {
 
         labelTextDoorOpen.setText("Door open:");
 
+        tfEnter.setText("1");
+
         btnEnter.setText("Enter");
         btnEnter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,8 +125,14 @@ public class BusBoard extends javax.swing.JFrame {
 
     private void btnEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnterActionPerformed
         try{
-            bus2.increasePassengers(Integer.parseInt(tfEnter.getText()));
-            btnEnter.setEnabled(false);
+            int increase=Integer.parseInt(tfEnter.getText());
+            if(increase <1 || increase>5){
+                JOptionPane.showMessageDialog(null, "Insert a number in 1-5", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                bus2.increasePassengers(increase);
+                btnEnter.setEnabled(false);
+            }
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Incorrect number", "Error", JOptionPane.ERROR_MESSAGE);
         }catch(TooManyPassengers e){
