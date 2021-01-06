@@ -32,8 +32,11 @@ public class Bus {
     private VetoableChangeSupport mVcs =
         new VetoableChangeSupport(this);
     
-    private ScheduledFuture<?> mSf;
-    //todo atomic counter for clising queue
+    //used for the door state
+    //contains the last scheduledfuture to close doors
+    //so we dont close them if there is someone entering/leaving
+    private ScheduledFuture<?> mSf; 
+   
     
     public Bus(){}
     
@@ -66,6 +69,10 @@ public class Bus {
         return numPassenger.get();
     }
 
+    /**
+     * Used to increase passengers
+     * @param increase how much to increase
+     */
     public synchronized void increasePassengers(int increase){
         synchronized(numPassenger){
             System.out.println("Passengers entering: "+increase); 

@@ -134,7 +134,7 @@ public class BusBoard extends javax.swing.JFrame {
                 btnEnter.setEnabled(false);
             }
         }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(null, "Incorrect number", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Not a number", "Error", JOptionPane.ERROR_MESSAGE);
         }catch(TooManyPassengers e){
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
