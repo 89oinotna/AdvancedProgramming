@@ -19,7 +19,10 @@ public class main {
             e.printStackTrace();
         }
         try {
-            XMLSerializer.deserialize("ciao");
+            Object[] des=XMLSerializer.deserialize("ciao");
+            for(Object stud:des){
+                System.out.println(((Student) stud).firstName);
+            }
         } catch (IOException | SAXException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -45,7 +45,7 @@ public class WordCount extends MapReduce<String, List<String>, String, Integer, 
     }
 
     /**
-     * retrieve a stream for a file
+     * retrieve a stream for a file counting words in each line
      * @param file
      * @return
      */
@@ -69,6 +69,11 @@ public class WordCount extends MapReduce<String, List<String>, String, Integer, 
                 );
     }
 
+    /**
+     * Reduce the list summing all of its element
+     * @param in
+     * @return
+     */
     @Override
     protected Stream<Pair<String, Integer>> reduce(Stream<Pair<String, List<Integer>>> in) {
         var r=in.parallel()
@@ -79,9 +84,6 @@ public class WordCount extends MapReduce<String, List<String>, String, Integer, 
        // var a=r.collect(toList());
         return r.sequential();
     }
-
-
-
 
 
     @Override

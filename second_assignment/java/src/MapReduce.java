@@ -18,9 +18,9 @@ abstract class MapReduce<K, V, IK extends Comparable<IK>, IV, R> {
      * @return the reduced stream
      */
     public final Stream<Pair<IK, R>> start(){
-
         var read=read();
         var mapped=map(read);
+        //we could also implement a reduce directly after the map to decrease the size
         var combined=combine(mapped);
         var reduced=reduce(combined);
         write(reduced);
@@ -28,8 +28,6 @@ abstract class MapReduce<K, V, IK extends Comparable<IK>, IV, R> {
     }
 
     //combine is a concrete operation used by the template method
-
-
 
     /**
      * Combines all map results

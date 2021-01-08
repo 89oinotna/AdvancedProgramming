@@ -15,7 +15,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 public class XMLSerializer {
@@ -127,25 +129,27 @@ public class XMLSerializer {
      * Deserialize a XML file, containing XMLable objects, given it's path
      * @param filePath path of the xml
      * @return Initialized array with XMLable object in the file
-     * @throws IOException
-     * @throws SAXException
-     * @throws ClassNotFoundException
-     * @throws InvocationTargetException
-     * @throws NoSuchMethodException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws IOException error reading the file
+     * @throws SAXException error parsing the xml
+     * @throws ClassNotFoundException the class of the xml object is not found
+     * @throws NoSuchMethodException the class doesnt provide a default empty constructor
+     * @throws InvocationTargetException see {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws InstantiationException see {@link java.lang.reflect.Constructor#newInstance(Object...)}
+     * @throws IllegalAccessException see {@link java.lang.reflect.Constructor#newInstance(Object...)}
      */
     public static Object[] deserialize(String filePath) throws IOException, SAXException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         Document doc=readXMLFile(filePath);
         doc.getDocumentElement().normalize();
         NodeList nl=doc.getDocumentElement().getChildNodes();
-        Object[] obArr= new Object[nl.getLength()];
+        List<Object> list=new ArrayList<>();
+        //Object[] obArr= new Object[nl.getLength()];
         for(int i=0; i<nl.getLength(); i++){
             if(nl.item(i).getNodeType() == Node.ELEMENT_NODE)
-                obArr[i]=objectFromNode(nl.item(i));
+                //obArr[i]=objectFromNode(nl.item(i));
+                list.add(objectFromNode(nl.item(i)));
         }
-        return obArr;
+        return list.toArray();
     }
 
     /**
@@ -248,7 +252,7 @@ public class XMLSerializer {
      * @throws ClassNotFoundException
      */
     private static Class<?> myForName(String className) throws ClassNotFoundException {
-        //TODO: it is possible to do a lookup on all the available packages
+        //it is possible to do a lookup on all the available packages check:
         //https://stackoverflow.com/questions/1308961/how-do-i-get-a-list-of-packages-and-or-classes-on-the-classpath
         switch(className){
             case "void":
